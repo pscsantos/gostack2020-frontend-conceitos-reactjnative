@@ -22,17 +22,20 @@ export default function App() {
     });
   }, []);
 
-  async function handleLikeRepository(id) {  
-    await api.post(`repositories/${id}/like`);
-    api.get('repositories').then((response) => {
-      setRepositories(response.data);
-    });
+  async function handleLikeRepository(id) { 
+    const repositoryIndex = repositories.findIndex(repository => repository.id === id);    
+    repositories[repositoryIndex].likes =  (await api.post(`repositories/${id}/like`)).data.likes;    
+    const newRepo = [...repositories];
+    setRepositories(newRepo);
   }
 
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#7159c1" />
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container}>        
+        
+        
+      { 
       <FlatList
         data={repositories}
         keyExtractor={(repository) => repository.id}
@@ -68,7 +71,7 @@ export default function App() {
           </TouchableOpacity>
         </View>
           )}
-        />        
+        />}
       </SafeAreaView>
     </>        
   );
